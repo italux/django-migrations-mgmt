@@ -25,7 +25,7 @@
 
 This is a [fork](https://gist.github.com/italux/1fe473c5d05da496e09a4d23b12857cf) of [Jc2k's](https://gist.github.com/Jc2k) [work](https://gist.github.com/Jc2k/bacff3105653f3b28e84), where I've made small fixes, build and distribuite as a pypi package
 
-> The idea here is that if you know which migrations were in version 2.0.3 of your project and which were in version 2.0.4 then setA - setB gives you the list of migrations you need to undo. See [Design Implementation](design_implementation.md) document.
+> The idea here is that if you know which migrations were in version 2.0.3 of your project and which were in version 2.0.4 then setA - setB gives you the list of migrations you need to undo. See [Design Implementation](docs/design_implementation.md) document.
 
 ### Prerequisites
 
