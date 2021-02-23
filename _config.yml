@@ -1,5 +1,4 @@
 remote_theme: rundocs/jekyll-rtd-theme
 include:
-  - docs/design_implementation.md
-  - docs/migrations_good_practices.md
+  - docs/
   - CONTRIBUTING.md
