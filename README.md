@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/github/v/tag/italux/django-migrations-mgmt)
 ![Python version](https://img.shields.io/pypi/pyversions/django-migrations-mgmt)
 ![PyPi version](https://img.shields.io/pypi/v/django-migrations-mgmt)
-![PyPi downloads](https://img.shields.io/pypi/dd/django-migrations-mgmt)
+![PyPi downloads](https://img.shields.io/pypi/dm/django-migrations-mgmt)
 
 > A Django management commands to help on migrations deployment rollbacks
 
