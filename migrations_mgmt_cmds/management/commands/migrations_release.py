@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
 import json
 
-from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.loader import MigrationLoader
+
+from migrations_mgmt_cmds.storage import migrations_releases_storage
 
 
 class Command(BaseCommand):
@@ -31,15 +31,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        if getattr(settings, "MIGRATIONS_RELEASES_DIR", None):
-            releases_dir = getattr(
-                settings,
-                "MIGRATIONS_RELEASES_DIR",
-                os.path.join(settings.BASE_DIR, "MIGRATIONS_RELEASES_DIR"),
-            )
-        else:
-            releases_dir = os.path.join(settings.BASE_DIR, "migrations/releases")
-
         db = options.get("database")
 
         # Load migration files from disk and their status from the database.
@@ -71,8 +62,4 @@ class Command(BaseCommand):
             separators=(",", ": "),
         )
 
-        if not os.path.exists(releases_dir):
-            os.makedirs(releases_dir)
-
-        with open(os.path.join(releases_dir, "{}.json".format(options["release"])), "w") as fp:
-            fp.write(result)
+        migrations_releases_storage.save(options["release"], result)
