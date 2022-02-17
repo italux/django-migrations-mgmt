@@ -46,14 +46,19 @@ INSTALLED_APPS = [
     'migrations_mgmt_cmds',
     ...
 ]
+...
+# Inform the class' path that handle storage's backend
+MIGRATIONS_RELEASES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+...
 ```
+
 - Create a migration release
 ```sh
 python manage.py migrations_release --release v0.1
 ```
-- Check the release JSON file
+- Check the release JSON file in your storage backend
 ```sh
-ls migrations/releases/
+ls
 v0.1.json
 ```
 - Create a new migration
@@ -86,6 +91,12 @@ python manage.py showmigrations
 ```
 
 ## Important Notes
+
+### Storage's Backend
+
+The storage's backend to be used can be informed passing a class' path to the setting `MIGRATIONS_RELEASES_STORAGE`, in case it isn't informed, the value set-up at Django's setting `DEFAULT_FILE_STORAGE` will be used instead.
+
+You should inform the path as python package, e.g. `'path.Classname'`
 
 ### Known Issues
 
