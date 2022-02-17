@@ -44,7 +44,7 @@ class Command(BaseCommand):
         if not migrations_releases_storage.exists(release_path):
             raise CommandError("No release file {!r}".format(release_path))
 
-        with migrations_releases_storage.open(release_path, 'r') as fp:
+        with migrations_releases_storage.open(release_path, "r") as fp:
             release = json.load(fp)
 
         targets = release.items()
@@ -90,7 +90,9 @@ class Command(BaseCommand):
         if self.verbosity >= 1:
             self.stdout.write(self.style.MIGRATE_HEADING("Operations to perform:"))
             for migration, applied in plan:
-                self.stdout.write("  Revert {} {}".format(migration.app_label, migration.name))
+                self.stdout.write(
+                    "  Revert {} {}".format(migration.app_label, migration.name)
+                )
 
         if self.verbosity >= 1:
             self.stdout.write(self.style.MIGRATE_HEADING("Running migrations:"))
@@ -106,7 +108,9 @@ class Command(BaseCommand):
                 self.stdout.write("  Applying %s..." % migration, ending="")
                 self.stdout.flush()
             elif action == "apply_success":
-                elapsed = " (%.3fs)" % (time.monotonic() - self.start) if compute_time else ""
+                elapsed = (
+                    " (%.3fs)" % (time.monotonic() - self.start) if compute_time else ""
+                )
                 if fake:
                     self.stdout.write(self.style.SUCCESS(" FAKED" + elapsed))
                 else:
@@ -117,7 +121,9 @@ class Command(BaseCommand):
                 self.stdout.write("  Unapplying %s..." % migration, ending="")
                 self.stdout.flush()
             elif action == "unapply_success":
-                elapsed = " (%.3fs)" % (time.monotonic() - self.start) if compute_time else ""
+                elapsed = (
+                    " (%.3fs)" % (time.monotonic() - self.start) if compute_time else ""
+                )
                 if fake:
                     self.stdout.write(self.style.SUCCESS(" FAKED" + elapsed))
                 else:
@@ -128,5 +134,7 @@ class Command(BaseCommand):
                 self.stdout.write("  Rendering model states...", ending="")
                 self.stdout.flush()
             elif action == "render_success":
-                elapsed = " (%.3fs)" % (time.monotonic() - self.start) if compute_time else ""
+                elapsed = (
+                    " (%.3fs)" % (time.monotonic() - self.start) if compute_time else ""
+                )
                 self.stdout.write(self.style.SUCCESS(" DONE" + elapsed))

@@ -56,10 +56,7 @@ class Command(BaseCommand):
             leaf_migrations[app_name] = graph.leaf_nodes(app_name)[0][1]
 
         result = json.dumps(
-            leaf_migrations,
-            sort_keys=True,
-            indent=4,
-            separators=(",", ": "),
+            leaf_migrations, sort_keys=True, indent=4, separators=(",", ": ")
         )
 
         migrations_releases_storage.save(options["release"], result)
