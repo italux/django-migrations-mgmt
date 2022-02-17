@@ -12,9 +12,7 @@ __all__ = ["migrations_releases_storage"]
 class MigrationsReleasesStorage(LazyObject):
     def _setup(self):
         self._wrapped = get_storage_class(
-            getattr(
-                settings, "MIGRATIONS_RELEASES_STORAGE", settings.DEFAULT_FILE_STORAGE
-            )
+            getattr(settings, "MIGRATIONS_RELEASES_STORAGE", settings.DEFAULT_FILE_STORAGE)
         )()
 
 
