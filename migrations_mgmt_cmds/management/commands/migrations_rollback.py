@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
 import json
 import time
 
-from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.executor import MigrationExecutor
+
+from migrations_mgmt_cmds.storage import migrations_releases_storage
 
 
 class Command(BaseCommand):
@@ -39,21 +39,14 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        if getattr(settings, "MIGRATIONS_RELEASES_DIR", None):
-            releases_dir = getattr(
-                settings,
-                "MIGRATIONS_RELEASES_DIR",
-                os.path.join(settings.BASE_DIR, "MIGRATIONS_RELEASES_DIR"),
-            )
-        else:
-            releases_dir = os.path.join(settings.BASE_DIR, "migrations/releases")
+        release_path = "{}.json".format(options["release"])
 
-        release_path = os.path.join(releases_dir, "{}.json".format(options["release"]))
-        if not os.path.exists(release_path):
+        if not migrations_releases_storage.exists(release_path):
             raise CommandError("No release file {!r}".format(release_path))
 
-        with open(release_path) as fp:
+        with migrations_releases_storage.open(release_path, "r") as fp:
             release = json.load(fp)
+
         targets = release.items()
 
         self.verbosity = options.get("verbosity")
