@@ -2,10 +2,12 @@
 from __future__ import unicode_literals
 
 import json
+from io import StringIO
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.loader import MigrationLoader
+from django.core.files import File
 
 from migrations_mgmt_cmds.storage import migrations_releases_storage
 
@@ -57,4 +59,6 @@ class Command(BaseCommand):
 
         result = json.dumps(leaf_migrations, sort_keys=True, indent=4, separators=(",", ": "))
 
-        migrations_releases_storage.save(options["release"], result)
+        file_object = File(StringIO(result), name=options["release"])
+
+        migrations_releases_storage.save(options["release"], file_object)
