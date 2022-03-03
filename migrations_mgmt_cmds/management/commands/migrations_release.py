@@ -7,7 +7,7 @@ from io import StringIO
 from django.core.management.base import BaseCommand, CommandError
 from django.db import DEFAULT_DB_ALIAS, connections
 from django.db.migrations.loader import MigrationLoader
-from django.core.files import File
+from django.core.files.base import ContentFile
 
 from migrations_mgmt_cmds.storage import migrations_releases_storage
 
@@ -59,6 +59,8 @@ class Command(BaseCommand):
 
         result = json.dumps(leaf_migrations, sort_keys=True, indent=4, separators=(",", ": "))
 
-        file_object = File(StringIO(result), name=options["release"])
+        release_path = "{}.json".format(options["release"])
 
-        migrations_releases_storage.save(options["release"], file_object)
+        file_object = ContentFile(bytes(result, "utf-8"), name=release_path)
+
+        migrations_releases_storage.save(release_path, file_object)
