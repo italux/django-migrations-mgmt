@@ -61,6 +61,6 @@ class Command(BaseCommand):
 
         release_path = "{}.json".format(options["release"])
 
-        file_object = ContentFile(bytes(result, 'utf-8'), name=release_path)
+        file_object = ContentFile(bytes(result, "utf-8"), name=release_path)
 
         migrations_releases_storage.save(release_path, file_object)
