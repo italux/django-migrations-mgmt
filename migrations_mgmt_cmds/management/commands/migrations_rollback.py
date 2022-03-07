@@ -37,6 +37,19 @@ class Command(BaseCommand):
             default=DEFAULT_DB_ALIAS,
             help='Nominates a database to synchronize. Defaults to the "default" database.',
         )
+        parser.add_argument(
+            '-v', '--verbosity',
+            action='store',
+            dest='verbosity',
+            default=1,
+            type=int, choices=[0, 1, 2, 3],
+            help='Verbosity level; 0=minimal output, 1=normal output, 2=verbose output, '
+                 '3=very verbose output',
+        )
+        parser.add_argument(
+            '--noinput', '--no-input', action='store_false', dest='interactive',
+            help='Tells Django to NOT prompt the user for input of any kind.',
+        )
 
     def handle(self, *args, **options):
         release_path = "{}.json".format(options["release"])
