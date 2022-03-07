@@ -65,29 +65,11 @@ class Command(BaseCommand):
         self.verbosity = options.get("verbosity")
         self.interactive = options.get("interactive")
 
-        # Get the database we're operating from
-        db = options.get("database")
-        connection = connections[db]
+        # Get the database executor to work out which apps have migrations and which do not
+        executor = self.get_executor(options.get("database"), self.migration_progress_callback)
 
-        # Hook for backends needing any database preparation
-        connection.prepare_database()
-        # Work out which apps have migrations and which do not
-        executor = MigrationExecutor(connection, self.migration_progress_callback)
-
-        # Before anything else, see if there's conflicting apps and drop out
-        # hard if there are any
-        conflicts = executor.loader.detect_conflicts()
-        if conflicts:
-            name_str = "; ".join(
-                "%s in %s" % (", ".join(names), app) for app, names in conflicts.items()
-            )
-            raise CommandError(
-                "Conflicting migrations detected; multiple leaf nodes in the "
-                "migration graph: (%s).\nTo fix them run "
-                "'python manage.py makemigrations --merge'" % name_str
-            )
-
-        plan = executor.migration_plan(targets)
+        # Get the plan from database we're operating from
+        plan = self.get_migration_plan(executor, targets)
 
         if not len(plan):
             raise CommandError("Nothing to rollback")
@@ -109,6 +91,34 @@ class Command(BaseCommand):
             self.stdout.write(self.style.MIGRATE_HEADING("Running migrations:"))
 
         executor.migrate(targets, plan, fake=False, fake_initial=False)
+
+    @staticmethod
+    def get_executor(database, callback=None):
+        # Get the database we're operating from
+        connection = connections[database]
+
+        # Hook for backends needing any database preparation
+        connection.prepare_database()
+
+        # Return the executor from database with callback to process output.
+        return MigrationExecutor(connection, callback)
+
+    @staticmethod
+    def get_migration_plan(executor, targets):
+        # Before anything else, see if there's conflicting apps and drop out
+        # hard if there are any
+        conflicts = executor.loader.detect_conflicts()
+        if conflicts:
+            name_str = "; ".join(
+                "%s in %s" % (", ".join(names), app) for app, names in conflicts.items()
+            )
+            raise CommandError(
+                "Conflicting migrations detected; multiple leaf nodes in the "
+                "migration graph: (%s).\nTo fix them run "
+                "'python manage.py makemigrations --merge'" % name_str
+            )
+
+        return executor.migration_plan(targets)
 
     def migration_progress_callback(self, action, migration=None, fake=False):
         if self.verbosity >= 1:
