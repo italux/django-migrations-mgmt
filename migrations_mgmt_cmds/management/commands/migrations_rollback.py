@@ -62,10 +62,7 @@ class Command(BaseCommand):
         if not migrations_releases_storage.exists(release_path):
             raise CommandError("No release file {!r}".format(release_path))
 
-        with migrations_releases_storage.open(release_path, "r") as fp:
-            release = json.load(fp)
-
-        targets = release.items()
+        targets = self.get_targets(release_path)
 
         self.verbosity = options.get("verbosity")
         self.interactive = options.get("interactive")
@@ -96,6 +93,13 @@ class Command(BaseCommand):
             self.stdout.write(self.style.MIGRATE_HEADING("Running migrations:"))
 
         executor.migrate(targets, plan, fake=False, fake_initial=False)
+
+    @staticmethod
+    def get_targets(release_path):
+        with migrations_releases_storage.open(release_path, "r") as fp:
+            release = json.load(fp)
+
+        return release.items()
 
     @staticmethod
     def get_executor(database, callback=None):
