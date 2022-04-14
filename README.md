@@ -98,6 +98,25 @@ The storage's backend to be used can be informed passing a class' path to the se
 
 You should inform the path as python package, e.g. `'path.Classname'`
 
+
+#### Command `release_management`
+
+This extension introduce a command to allow for displaying, disabling or deleting the release files available in the storage's backend: 
+
+```
+# Display list of ordered release files with extension .json
+python manage.py release_management --display-list
+
+# Display last created file with extension .json
+python manage.py release_management --display-last
+
+# Delete a file informed by path from storage
+python manage.py release_management --delete-release=<file's path in storage>
+
+# Rename a release file informed by path from storage, appending `.disabled` to its filename. 
+python manage.py release_management --disable-release=<release file's path in storage>
+```
+
 ### Known Issues
 
 It's quite common to change the database level constraints - for example to suddenly allow NULL data - which you'll almost certainly end up with data that doesn't satisfy this constraint, and consequenctly any attempt to revert will fail. Similar problems existing when changing the size of a field.
