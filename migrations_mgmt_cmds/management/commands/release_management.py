@@ -122,8 +122,10 @@ class Command(BaseCommand):
             # Open file content
             file_object = migrations_releases_storage.open(disable_release_file, "rb")
 
-            # Save new content with extension `.old`
-            migrations_releases_storage.save(disable_release_file + ".old", content=file_object)
+            # Save new content with extension `.disabled`
+            migrations_releases_storage.save(
+                disable_release_file + ".disabled", content=file_object
+            )
 
             # Delete old file.
             migrations_releases_storage.delete(disable_release_file)
@@ -132,7 +134,7 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.SUCCESS(
                         "File `{}` changed to `{}` with success.".format(
-                            disable_release_file, disable_release_file + ".old"
+                            disable_release_file, disable_release_file + ".disabled"
                         )
                     )
                 )
