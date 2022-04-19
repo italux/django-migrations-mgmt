@@ -78,7 +78,7 @@ class Command(BaseCommand):
         display_list = options["display_list"]
         display_last = options["display_last"]
         disable_release_file = options["disable_release"]
-        delete_release_file = options["disable_release"]
+        delete_release_file = options["delete_release"]
         recursive = options["recursive_search"]
         verbosity = options["verbosity"]
 
