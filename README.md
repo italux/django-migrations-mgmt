@@ -49,6 +49,10 @@ INSTALLED_APPS = [
 ...
 # Inform the class' path that handle storage's backend
 MIGRATIONS_RELEASES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+# Inform the function's path that handle storage's backend sorting method. 
+# This is optional and should be a called for parameter `key` of `sorted` function.  
+MIGRATIONS_RELEASES_SORTING = 'migrations_mgmt_cmds.management.commands.release_management.default_sort_date'
 ...
 ```
 
