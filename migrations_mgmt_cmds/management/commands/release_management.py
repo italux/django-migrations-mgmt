@@ -1,13 +1,18 @@
 from os.path import join
 from django.core.management.base import BaseCommand
+from django.conf import settings
+from django.utils.module_loading import import_string
 
 from migrations_mgmt_cmds.storage import migrations_releases_storage
 
-__all__ = ["Command"]
+__all__ = ["Command", "default_sort_date"]
 
 
-def sort_create_date(filename):
-    return int(migrations_releases_storage.get_created_time(filename).timestamp())
+def default_sort_date(filename):
+    try:
+        return int(migrations_releases_storage.get_created_time(filename).timestamp())
+    except NotImplementedError:
+        return int(migrations_releases_storage.get_modified_time(filename).timestamp())
 
 
 class Command(BaseCommand):
@@ -83,10 +88,13 @@ class Command(BaseCommand):
         verbosity = options["verbosity"]
 
         if display_list or display_last:
+            sorting_setting = getattr(settings, "MIGRATIONS_RELEASES_SORTING", None)
+            key = import_string(sorting_setting) if sorting_setting else default_sort_date
+
             # Get sorted list of JSON files only.
             self.sorted_files_by_date = sorted(
                 [f for f in self.get_files_list(recursive) if f[-5:].lower() == ".json"],
-                key=sort_create_date,
+                key=key,
             )
 
         if display_list and verbosity:
