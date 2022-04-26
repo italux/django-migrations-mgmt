@@ -1,7 +1,8 @@
-from os.path import join
+from os.path import join, basename
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.utils.module_loading import import_string
+from django.core.management.base import CommandParser, DjangoHelpFormatter
 
 from migrations_mgmt_cmds.storage import migrations_releases_storage
 
@@ -18,6 +19,52 @@ def default_sort_date(filename):
 class Command(BaseCommand):
     help = "Manage release files."
     sorted_files_by_date = None
+
+    def create_parser(self, prog_name, subcommand, **kwargs):
+        """
+        Create and return the ``ArgumentParser`` which will be used to
+        parse the arguments to this command.
+        """
+        parser = CommandParser(
+            prog='%s %s' % (basename(prog_name), subcommand),
+            description=self.help or None,
+            formatter_class=DjangoHelpFormatter,
+            missing_args_message=getattr(self, 'missing_args_message', None),
+            called_from_command_line=getattr(self, '_called_from_command_line', None),
+            **kwargs
+        )
+        parser.add_argument(
+            '--settings',
+            help=(
+                'The Python path to a settings module, e.g. '
+                '"myproject.settings.main". If this isn\'t provided, the '
+                'DJANGO_SETTINGS_MODULE environment variable will be used.'
+            ),
+        )
+        parser.add_argument(
+            '--pythonpath',
+            help='A directory to add to the Python path, e.g. "/home/djangoprojects/m>
+        )
+        parser.add_argument(
+            '--no-color', action='store_true',
+            help="Don't colorize the command output.",
+        )
+        parser.add_argument(
+            '--force-color', action='store_true',
+            help='Force colorization of the command output.',
+        )
+        parser.add_argument(
+            "-v",
+            "--verbosity",
+            action="store",
+            dest="verbosity",
+            default=2,
+            type=int,
+            choices=[0, 1, 2],
+            help="Verbosity level; 0=no output, 1=minimal output, 2=normal output",
+        )
+        self.add_arguments(parser)
+        return parser
 
     def add_arguments(self, parser):
         """
@@ -56,16 +103,6 @@ class Command(BaseCommand):
             dest="delete_release",
             default=None,
             help="Nominates the release file's path to permanent delete it.",
-        )
-        parser.add_argument(
-            "-v",
-            "--verbosity",
-            action="store",
-            dest="verbosity",
-            default=2,
-            type=int,
-            choices=[0, 1, 2],
-            help="Verbosity level; 0=no output, 1=minimal output, 2=normal output",
         )
 
     def get_files_list(self, recursive=False, path=""):
