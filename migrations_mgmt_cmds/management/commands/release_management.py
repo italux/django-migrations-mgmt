@@ -26,32 +26,34 @@ class Command(BaseCommand):
         parse the arguments to this command.
         """
         parser = CommandParser(
-            prog='%s %s' % (basename(prog_name), subcommand),
+            prog="%s %s" % (basename(prog_name), subcommand),
             description=self.help or None,
             formatter_class=DjangoHelpFormatter,
-            missing_args_message=getattr(self, 'missing_args_message', None),
-            called_from_command_line=getattr(self, '_called_from_command_line', None),
-            **kwargs
+            missing_args_message=getattr(self, "missing_args_message", None),
+            called_from_command_line=getattr(self, "_called_from_command_line", None),
+            **kwargs,
         )
         parser.add_argument(
-            '--settings',
+            "--settings",
             help=(
-                'The Python path to a settings module, e.g. '
+                "The Python path to a settings module, e.g. "
                 '"myproject.settings.main". If this isn\'t provided, the '
-                'DJANGO_SETTINGS_MODULE environment variable will be used.'
+                "DJANGO_SETTINGS_MODULE environment variable will be used."
             ),
         )
         parser.add_argument(
-            '--pythonpath',
-            help='A directory to add to the Python path, e.g. "/home/djangoprojects/m>
+            "--pythonpath",
+            help='A directory to add to the Python path, e.g. "/home/djangoprojects/">',
         )
         parser.add_argument(
-            '--no-color', action='store_true',
+            "--no-color",
+            action="store_true",
             help="Don't colorize the command output.",
         )
         parser.add_argument(
-            '--force-color', action='store_true',
-            help='Force colorization of the command output.',
+            "--force-color",
+            action="store_true",
+            help="Force colorization of the command output.",
         )
         parser.add_argument(
             "-v",
